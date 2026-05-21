@@ -1,0 +1,11 @@
+#!/bin/bash
+
+BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+LOG_FILE="$BASE_DIR/logs/monitor.log"
+
+write_log() {
+    MESSAGE="$1"
+
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $MESSAGE" >> "$LOG_FILE"
+}

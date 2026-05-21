@@ -1,0 +1,19 @@
+#!/bin/bash
+
+BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+source "$BASE_DIR/config/thresholds.conf"
+source "$BASE_DIR/utils/log-helper"
+
+DISK_USAGE=$(df -h / | awk 'NR==2 {print $5}' | sed 's/%//')
+
+if [ "$DISK_USAGE" -gt "$DISK_THRESHOLD" ]
+then
+    echo "Disk Usage High: $DISK_USAGE%"
+
+    write_log "DISK ALERT - Usage: $DISK_USAGE%"
+else
+    echo "Disk Healthy: $DISK_USAGE%"
+
+    write_log "DISK HEALTHY - Usage: $DISK_USAGE%"
+fi

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+"$BASE_DIR/monitor/cpu-monitor"
+"$BASE_DIR/monitor/memory-monitor"
+"$BASE_DIR/monitor/disk-monitor"
+
+while read SERVICE
+do
+    "$BASE_DIR/monitor/service-monitor" "$SERVICE"
+
+done < "$BASE_DIR/config/services.conf"

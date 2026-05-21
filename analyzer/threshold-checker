@@ -1,0 +1,11 @@
+#!/bin/bash
+
+VALUE=$1
+THRESHOLD=$2
+
+if (( VALUE > THRESHOLD ))
+then
+   echo "WARNING"
+else
+   echo "HEALTHY"
+fi

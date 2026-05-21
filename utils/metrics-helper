@@ -1,0 +1,15 @@
+#!/bin/bash
+
+METRIC_FILE="$HOME/linux-monitoring-system/custom-metrics/alerts.prom"
+
+update_metric() {
+
+    METRIC_NAME=$1
+    METRIC_VALUE=$2
+
+    grep -v "^$METRIC_NAME " "$METRIC_FILE" > /tmp/metrics.tmp
+
+    echo "$METRIC_NAME $METRIC_VALUE" >> /tmp/metrics.tmp
+
+    mv /tmp/metrics.tmp "$METRIC_FILE"
+}
