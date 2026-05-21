@@ -1,0 +1,11 @@
+#!/bin/bash
+
+VALUE=$1
+THRESHOLD=$2
+
+if [ "$VALUE" -gt "$THRESHOLD" ]
+then
+    echo "UNHEALTHY"
+else
+    echo "HEALTHY"
+fi
