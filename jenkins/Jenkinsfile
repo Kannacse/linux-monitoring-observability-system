@@ -1,0 +1,27 @@
+pipeline {
+
+ agent any
+
+ stages {
+
+  stage('Test') {
+   steps {
+    sh 'make test'
+   }
+  }
+
+  stage('Build') {
+   steps {
+    sh 'docker build -t linux-monitor -f docker/Dockerfile .'
+   }
+  }
+
+  stage('Deploy') {
+   steps {
+    sh 'cd deploy && docker compose up -d'
+   }
+  }
+
+ }
+
+}
