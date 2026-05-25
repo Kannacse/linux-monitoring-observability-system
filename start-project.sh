@@ -1,5 +1,19 @@
 #!/bin/bash
-cd observability || exit
-docker compose up -d
-cd ../main-controller || exit
-./main-monitor
+
+set -e
+
+echo "Starting Linux Monitoring System..."
+
+cd /app
+
+mkdir -p logs
+
+chmod +x \
+controller/main-monitor \
+monitor/* \
+analyzer/* \
+healer/*
+
+./controller/main-monitor
+
+tail -f /dev/null
