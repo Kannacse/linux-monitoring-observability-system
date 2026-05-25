@@ -1,27 +1,27 @@
 pipeline {
 
- agent any
+    agent any
 
- stages {
+    stages {
 
-  stage('Test') {
-   steps {
-    sh 'make test'
-   }
-  }
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
-  stage('Build') {
-   steps {
-    sh 'docker build -t linux-monitor -f docker/Dockerfile .'
-   }
-  }
+        stage('Smoke Test') {
+            steps {
+                sh 'make test'
+            }
+        }
 
-  stage('Deploy') {
-   steps {
-    sh 'cd deploy && docker compose up -d'
-   }
-  }
+        stage('Build') {
+            steps {
+                sh 'docker build -t linux-monitor -f docker/Dockerfile .'
+            }
+        }
 
- }
+    }
 
 }
