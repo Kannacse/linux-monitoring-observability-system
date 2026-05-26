@@ -4,21 +4,26 @@ SERVICES=("NetworkManager" "sshd" "cronie")
 
 for service in "${SERVICES[@]}"
 do
-    if command -v systemctl >/dev/null 2>&1; then
 
-        if systemctl is-active --quiet "$service"
-        then
-            echo "$service Healthy"
+if command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ]
+then
 
-        else
-            echo "$service DOWN"
+if systemctl is-active --quiet "$service"
+then
+echo "$service Healthy"
 
-            systemctl restart "$service" \
-            || echo "Unable to restart $service"
-        fi
+else
+echo "$service DOWN"
 
-    else
-        echo "Skipping $service (container mode)"
-    fi
+systemctl restart "$service" \
+|| echo "Unable to restart $service"
+
+fi
+
+else
+
+echo "Skipping $service (container mode)"
+
+fi
 
 done

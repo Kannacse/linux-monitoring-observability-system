@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: linux-monitor
+  namespace: linux-monitor
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: linux-monitor
+
+  template:
+
+    metadata:
+      labels:
+        app: linux-monitor
+
+    spec:
+
+      containers:
+
+        - name: linux-monitor
+
+          image: linux-monitor:latest
+
+          imagePullPolicy: Never
+
+          envFrom:
+            - configMapRef:
+                name: monitor-config
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+
+      restartPolicy: Always
