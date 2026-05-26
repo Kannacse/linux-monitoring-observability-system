@@ -22,6 +22,11 @@ pipeline {
    }
   }
 
+ stage('Health Check') {
+  steps {
+   sh 'bash scripts/health-check.sh'
+  }
+ }
   stage('Deploy') {
    steps {
     sh 'make up'
