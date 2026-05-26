@@ -1,27 +1,33 @@
 pipeline {
 
-    agent any
+ agent any
 
-    stages {
+ stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+  stage('Checkout') {
+   steps {
+    checkout scm
+   }
+  }
 
-        stage('Smoke Test') {
-            steps {
-                sh 'make test'
-            }
-        }
+  stage('Smoke Test') {
+   steps {
+    sh 'make test'
+   }
+  }
 
-        stage('Build') {
-            steps {
-                sh 'make build'
-            }
-        }
+  stage('Build') {
+   steps {
+    sh 'make build'
+   }
+  }
 
-    }
+  stage('Deploy') {
+   steps {
+    sh 'make up'
+   }
+  }
+
+ }
 
 }
