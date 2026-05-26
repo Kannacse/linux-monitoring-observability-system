@@ -1,8 +1,8 @@
 up:
-	docker compose -f deploy/docker-compose.yml up -d
+	docker-compose -f deploy/docker-compose.yml up -d
 
 down:
-	docker compose -f deploy/docker-compose.yml down
+	docker-compose -f deploy/docker-compose.yml down
 
 test:
 	bash tests/smoke-test.sh
