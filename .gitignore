@@ -1,15 +1,43 @@
-logs/*.log
-!logs/.gitkeep
+# -------------------
+# Terraform
+# -------------------
+terraform/.terraform/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+*.tfstate
+*.tfstate.*
 
-custom-metrics/*.prom
-
-observability/grafana-data/
-observability/prometheus-data/
-
-*.tmp
-
+# -------------------
+# Secrets (CRITICAL)
+# -------------------
+*.pem
+*.tfvars
 .env
 
-.vscode/
+# -------------------
+# Logs
+# -------------------
+logs/
 
+# -------------------
+# Temporary files
+# -------------------
+*.tmp
+
+# -------------------
+# IDE / OS
+# -------------------
+.vscode/
+.DS_Store
+
+# -------------------
+# Python cache
+# -------------------
 __pycache__/
+
+# -------------------
+# Monitoring / metrics artifacts
+# -------------------
+custom-metrics/*.prom
+observability/grafana-data/
+observability/prometheus-data/
