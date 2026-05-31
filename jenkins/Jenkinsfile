@@ -29,9 +29,7 @@ stages {
     stage('Build Docker Image') {
         steps {
             sh '''
-            docker build \
-            -t linux-monitor-system \
-            -f docker/Dockerfile .
+            docker build -t linux-monitor-system -f docker/Dockerfile .
             '''
         }
     }
@@ -39,11 +37,8 @@ stages {
     stage('Login To ECR') {
         steps {
             sh '''
-            aws ecr get-login-password \
-            --region $AWS_REGION | \
-            docker login \
-            --username AWS \
-            --password-stdin \
+            aws ecr get-login-password --region $AWS_REGION | \
+            docker login --username AWS --password-stdin \
             $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
             '''
         }
@@ -67,7 +62,6 @@ stages {
             export KUBECONFIG=/var/jenkins_home/.kube/config
 
             kubectl rollout restart deployment/linux-monitoring
-
             kubectl rollout status deployment/linux-monitoring
             '''
         }
@@ -77,7 +71,6 @@ stages {
         steps {
             sh '''
             export KUBECONFIG=/var/jenkins_home/.kube/config
-
             kubectl get pods
             '''
         }
@@ -96,4 +89,3 @@ post {
 ```
 
 }
-
