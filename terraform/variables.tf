@@ -1,14 +1,11 @@
 variable "aws_region" {
-  type    = string
   default = "ap-south-1"
 }
 
-variable "environment" {
-  type    = string
-  default = "dev"
+variable "project_name" {
+  default = "linux-monitoring-system"
 }
 
-variable "project_name" {
-  type    = string
-  default = "linux-monitoring-system"
+variable "environment" {
+  default = "dev"
 }
