@@ -1,5 +1,7 @@
 module "monitoring_stack" {
-  source = "../../"
+source = "../../"
 
-  environment = "dev"
+aws_region  = var.aws_region
+environment = var.environment
 }
+

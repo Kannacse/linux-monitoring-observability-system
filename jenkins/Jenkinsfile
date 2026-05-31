@@ -1,38 +1,89 @@
 pipeline {
+agent any
 
- agent any
+```
+environment {
+    AWS_REGION = "ap-south-1"
+    AWS_ACCOUNT_ID = "042775549160"
+    ECR_REPO = "linux-monitoring-system"
+}
 
- stages {
+stages {
 
-  stage('Checkout') {
-   steps {
-    checkout scm
-   }
-  }
+    stage('Checkout') {
+        steps {
+            checkout scm
+        }
+    }
 
-  stage('Smoke Test') {
-   steps {
-    sh 'make test'
-   }
-  }
+    stage('Verify Tools') {
+        steps {
+            sh '''
+            docker --version
+            aws --version
+            kubectl version --client
+            '''
+        }
+    }
 
-  stage('Build') {
-   steps {
-    sh 'make build'
-   }
-  }
+    stage('Build Docker Image') {
+        steps {
+            sh '''
+            docker build \
+            -t linux-monitor-system \
+            -f docker/Dockerfile .
+            '''
+        }
+    }
 
- stage('Health Check') {
-  steps {
-   sh 'bash scripts/health-check.sh'
-  }
- }
-  stage('Deploy') {
-   steps {
-    sh 'make up'
-   }
-  }
+    stage('Login To ECR') {
+        steps {
+            sh '''
+            aws ecr get-login-password \
+            --region $AWS_REGION | \
+            docker login \
+            --username AWS \
+            --password-stdin \
+            $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+            '''
+        }
+    }
 
- }
+    stage('Push To ECR') {
+        steps {
+            sh '''
+            docker tag linux-monitor-system:latest \
+            $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:latest
+
+            docker push \
+            $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:latest
+            '''
+        }
+    }
+
+    stage('Deploy To Kubernetes') {
+        steps {
+            sh '''
+            export KUBECONFIG=/var/jenkins_home/.kube/config
+
+            kubectl rollout restart deployment/linux-monitoring
+
+            kubectl rollout status deployment/linux-monitoring
+            '''
+        }
+    }
+
+    stage('Verify Deployment') {
+        steps {
+            sh '''
+            export KUBECONFIG=/var/jenkins_home/.kube/config
+
+            kubectl get pods
+            '''
+        }
+    }
+}
+```
 
 }
+

@@ -1,8 +1,7 @@
 resource "aws_instance" "monitor" {
 
-  ami = "ami-0f58b397bc5c1f2e8"
-
-  instance_type = "t3.medium"
+  ami           = "ami-0f58b397bc5c1f2e8"
+  instance_type = "t3.micro"
 
   subnet_id = var.subnet_id
 
@@ -16,12 +15,12 @@ resource "aws_instance" "monitor" {
 #!/bin/bash
 
 apt update -y
-
 apt install docker.io -y
 
 systemctl enable docker
-
 systemctl start docker
+
+usermod -aG docker ubuntu
 
 docker run -d \
 -p 9090:9090 \
@@ -37,4 +36,5 @@ EOF
   tags = {
     Name = "${var.project_name}-server"
   }
+
 }

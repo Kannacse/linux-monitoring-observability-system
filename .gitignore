@@ -6,6 +6,11 @@ terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
 *.tfstate
 *.tfstate.*
+# Terraform
+**/.terraform/
+**/.terraform/*
+*.tfstate
+*.tfstate.*
 
 # -------------------
 # Secrets (CRITICAL)

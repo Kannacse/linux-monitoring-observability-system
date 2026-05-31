@@ -2,50 +2,26 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: linux-monitor
-  namespace: linux-monitor
+  name: linux-monitoring
 
 spec:
   replicas: 1
 
   selector:
     matchLabels:
-      app: linux-monitor
+      app: linux-monitoring
 
   template:
-  metadata:
-
-    labels:
-      app: linux-monitor
-
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "9100"
+    metadata:
+      labels:
+        app: linux-monitoring
 
     spec:
+      imagePullSecrets:
+        - name: ecr-secret
 
       containers:
+        - name: linux-monitoring
+          image: 042775549160.dkr.ecr.ap-south-1.amazonaws.com/linux-monitoring-system:latest
+          imagePullPolicy: Always
 
-        - name: linux-monitor
-
-          image: linux-monitor:latest
-
-          imagePullPolicy: Never
-
-          envFrom:
-            - configMapRef:
-                name: monitor-config
-
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "128Mi"
-
-            limits:
-              cpu: "500m"
-              memory: "512Mi"
-
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-
-      restartPolicy: Always

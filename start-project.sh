@@ -2,8 +2,6 @@
 
 set -e
 
-echo "Starting Linux Monitoring System..."
-
 cd /app
 
 mkdir -p logs

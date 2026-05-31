@@ -1,18 +1,11 @@
 apiVersion: v1
 kind: Service
-
 metadata:
-  name: linux-monitor-service
-  namespace: linux-monitor
-
+  name: linux-monitoring-service
 spec:
-
   selector:
-    app: linux-monitor
-
+    app: linux-monitoring
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8080
-
-  type: NodePort
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
