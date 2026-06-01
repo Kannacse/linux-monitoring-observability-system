@@ -1,410 +1,300 @@
 # Linux Monitoring & Auto-Healing System
 
-## Overview
+Overview
 
-Linux Monitoring & Auto-Healing System is a DevOps project designed to monitor Linux system health, analyze resource utilization, automatically perform corrective actions, and provide observability through Prometheus and Grafana.
+Linux Monitoring System is a DevOps project designed to monitor Linux system health, analyze resource utilization, perform automated recovery actions, and provide observability through Prometheus and Grafana.
 
-The project demonstrates end-to-end DevOps practices including:
+The project demonstrates practical experience in:
 
-* Linux Administration
-* Shell Scripting
-* Docker Containerization
-* AWS Cloud Infrastructure
-* Terraform Infrastructure as Code
-* Amazon ECR
-* Kubernetes Deployment
-* Jenkins CI/CD
-* Prometheus Monitoring
-* Grafana Visualization
-* Auto-Healing Mechanisms
+Linux Administration
+Shell Scripting
+Docker Containerization
+AWS Cloud Infrastructure
+Terraform Infrastructure as Code
+Amazon ECR
+Kubernetes Deployment (Minikube)
+Jenkins CI/CD
+Prometheus Monitoring
+Grafana Visualization
+Auto-Healing Mechanisms
+Project Architecture
 
----
+Linux Monitoring Scripts
 
-## Project Architecture
+↓
 
-```text
-+-----------------------+
-| Linux Monitoring      |
-| Scripts               |
-+----------+------------+
-           |
-           v
-+-----------------------+
-| Health Analyzer       |
-+----------+------------+
-           |
-           v
-+-----------------------+
-| Auto-Healing Engine   |
-+----------+------------+
-           |
-           v
-+-----------------------+
-| Docker Container      |
-+----------+------------+
-           |
-           v
-+-----------------------+
-| Amazon ECR            |
-+----------+------------+
-           |
-           v
-+-----------------------+
-| Kubernetes            |
-| (Minikube)            |
-+----------+------------+
-           |
-           +----------------+
-           |                |
-           v                v
-+----------------+   +----------------+
-| Prometheus     |   | Grafana        |
-+----------------+   +----------------+
+Health Analyzer
 
-           ^
-           |
-+-----------------------+
-| Jenkins CI/CD         |
-+-----------------------+
-```
+↓
 
----
+Auto-Healing Engine
 
-## Features
+↓
 
-### Monitoring
+Docker Container
+
+↓
+
+Amazon ECR
+
+↓
+
+AWS EC2 Deployment (via AWS Systems Manager)
+
+↓
+
+Prometheus Monitoring
+
+↓
+
+Grafana Dashboards
+
+Features
+Monitoring
 
 Monitors:
 
-* CPU Utilization
-* Memory Utilization
-* Disk Usage
-* Critical Services
-
-### Health Analysis
-
-Evaluates system health using configurable thresholds.
-
-### Auto-Healing
+CPU Utilization
+Memory Utilization
+Disk Usage
+Critical Services
+Health Analysis
+Threshold-based analysis
+Health status evaluation
+Auto-Healing
 
 Supports:
 
-* Service Restart
-* Log Cleanup
-* Resource Recovery Actions
-
-### Containerization
-
-* Dockerized monitoring platform
-* Portable deployment architecture
-
-### Kubernetes Deployment
-
-* Kubernetes Deployment Manifest
-* Replica Management
-* Pod Self-Healing
-* Rolling Updates
-
-### Observability
-
-Prometheus:
-
-* Node Metrics Collection
-* System Health Metrics
-
-Grafana:
-
-* CPU Dashboard
-* Memory Dashboard
-* Disk Dashboard
-* Service Monitoring Dashboard
-
-### CI/CD
+Service restart automation
+Log cleanup automation
+Resource recovery actions
+Containerization
+Dockerized monitoring platform
+Portable deployment architecture
+Kubernetes Validation
+Minikube Cluster Setup
+Deployment Manifest
+Service Configuration
+Replica Management
+Pod Verification
+Observability
+Prometheus
+Metrics Collection
+Node Exporter Integration
+Alert Rule Evaluation
+Grafana
+CPU Dashboard
+Memory Dashboard
+Disk Dashboard
+System Monitoring Dashboard
+CI/CD
 
 Jenkins Pipeline:
 
-* Source Code Checkout
-* Docker Image Build
-* Amazon ECR Push
-* Kubernetes Deployment
-
----
-
-## Project Structure
-
-```text
+Source Code Checkout
+Docker Image Build
+Amazon ECR Authentication
+Amazon ECR Push
+AWS Systems Manager Deployment
+Automated EC2 Container Deployment
+Project Structure
 linux-monitoring-system/
 
 ├── analyzer/
 ├── config/
 ├── controller/
 ├── docker/
-│   ├── Dockerfile
-│   └── entrypoint.sh
 ├── healer/
 ├── jenkins/
-│   └── Jenkinsfile
 ├── k8s/
-│   └── deployment.yaml
 ├── metrics/
 ├── monitor/
 ├── observability/
 ├── scheduler/
 ├── scripts/
 ├── terraform/
-│   ├── backend.tf
-│   ├── environments/
-│   ├── modules/
-│   └── providers.tf
 ├── utils/
 └── start-project.sh
-```
-
----
-
-## Technologies Used
-
-### Operating System
-
-* Linux
-* Garuda Linux
-
-### Scripting
-
-* Bash
-
-### Containerization
-
-* Docker
-
-### Cloud
-
-* AWS EC2
-* Amazon ECR
-* IAM
-
-### Infrastructure as Code
-
-* Terraform
-
-### Kubernetes
-
-* Minikube
-* kubectl
-
-### CI/CD
-
-* Jenkins
-
-### Monitoring
-
-* Prometheus
-* Node Exporter
-* Grafana
-
-### Version Control
-
-* Git
-* GitHub
-
----
-
-## AWS Resources Used
-
-* EC2
-* ECR
-* IAM
-* Security Groups
+Technologies Used
+Operating System
+Garuda Linux (Development)
+Ubuntu 24.04 (AWS EC2)
+Scripting
+Bash
+Containerization
+Docker
+Cloud
+AWS EC2
+Amazon ECR
+IAM
+Security Groups
+AWS Systems Manager (SSM)
+Infrastructure as Code
+Terraform
+Kubernetes
+Minikube
+kubectl
+CI/CD
+Jenkins
+Monitoring
+Prometheus
+Node Exporter
+Grafana
+Version Control
+Git
+GitHub
+AWS Resources Used
+EC2
+ECR
+IAM
+Security Groups
+Systems Manager (SSM)
 
 Terraform modules created for:
 
-* Networking
-* Security
-* Monitoring
-* ECR
-* IAM
-* EC2
+Networking
+Security
+Monitoring
+ECR
+IAM
+EC2
+Completed Milestones
+Phase 1 – Linux Monitoring
 
----
+✅ CPU Monitoring
 
-## Completed Milestones
+✅ Memory Monitoring
 
-### Phase 1 – Linux Monitoring
+✅ Disk Monitoring
 
-Completed:
+✅ Service Monitoring
 
-* CPU Monitoring
-* Memory Monitoring
-* Disk Monitoring
-* Service Monitoring
+Phase 2 – Health Analysis
 
-Status: ✅ Completed
+✅ Threshold-Based Analysis
 
----
+✅ Health Status Evaluation
 
-### Phase 2 – Health Analysis
+Phase 3 – Auto-Healing
 
-Completed:
+✅ Service Restart Automation
 
-* Threshold-Based Analysis
-* Health Status Evaluation
+✅ Log Cleanup Automation
 
-Status: ✅ Completed
+Phase 4 – Dockerization
 
----
+✅ Dockerfile Creation
 
-### Phase 3 – Auto-Healing
+✅ Docker Image Build
 
-Completed:
+✅ Container Execution
 
-* Service Restart Automation
-* Log Cleanup Automation
+Phase 5 – AWS Integration
 
-Status: ✅ Completed
+✅ AWS CLI Configuration
 
----
+✅ ECR Repository Creation
 
-### Phase 4 – Dockerization
+✅ Docker Image Push
 
-Completed:
+Phase 6 – Prometheus
 
-* Dockerfile Creation
-* Docker Image Build
-* Container Execution
+✅ Prometheus Deployment
 
-Status: ✅ Completed
+✅ Node Exporter Deployment
 
----
+✅ Metrics Collection
 
-### Phase 5 – AWS Integration
+Phase 7 – Grafana
 
-Completed:
+✅ Grafana Deployment
 
-* AWS CLI Configuration
-* ECR Repository Creation
-* Docker Image Push
+✅ Dashboard Configuration
 
-Status: ✅ Completed
+✅ Prometheus Integration
 
----
+Phase 8 – Kubernetes
 
-### Phase 6 – Prometheus
+✅ Minikube Cluster Setup
 
-Completed:
+✅ Deployment Manifest Creation
 
-* Prometheus Deployment
-* Node Exporter Deployment
-* Metrics Collection
+✅ Service Creation
 
-Status: ✅ Completed
+✅ Pod Deployment
 
----
+✅ Pod Verification
 
-### Phase 7 – Grafana
+Phase 9 – Jenkins CI/CD
 
-Completed:
+✅ Jenkins Installation
 
-* Grafana Deployment
-* Dashboard Configuration
-* Prometheus Integration
+✅ Docker Integration
 
-Status: ✅ Completed
+✅ AWS CLI Integration
 
----
+✅ ECR Push Automation
 
-### Phase 8 – Kubernetes
+✅ AWS SSM Deployment
 
-Completed:
+✅ Automated EC2 Deployment
 
-* Minikube Cluster Setup
-* Deployment Manifest Creation
-* Pod Deployment
-* Pod Verification
+Current Status
 
-Status: ✅ Completed
+Project Completion: 100%
 
----
+✅ Linux Monitoring
 
-### Phase 9 – Jenkins CI/CD
+✅ Auto-Healing
 
-Completed:
+✅ Docker
 
-* Jenkins Installation
-* Docker Integration
-* AWS CLI Integration
-* kubectl Integration
-* Kubernetes Connectivity
+✅ Terraform
 
-In Progress:
+✅ AWS
 
-* Jenkins Pipeline Validation
-* Automated ECR Push
-* Automated Kubernetes Deployment
+✅ Amazon ECR
 
-Status: 🔄 In Progress
+✅ Prometheus
 
----
+✅ Grafana
 
-## Current Status
+✅ Kubernetes Validation
 
-Project Completion: 95%
+✅ Jenkins CI/CD
 
-```text
-Linux Monitoring        ✅
-Auto-Healing            ✅
-Docker                  ✅
-Terraform               ✅
-AWS                     ✅
-Amazon ECR              ✅
-Prometheus              ✅
-Grafana                 ✅
-Kubernetes              ✅
-Jenkins                 🔄
-```
+✅ Automated EC2 Deployment
 
----
+✅ Alert Rules
 
-## Remaining Tasks
+✅ Self-Healing Recovery
 
-### Jenkins Pipeline
-
-* Fix Jenkinsfile formatting issue
-* Validate pipeline execution
-* Verify ECR push automation
-* Verify Kubernetes deployment automation
-
-### Future Enhancements
-
-* Slack Notifications
-* Email Alerts
-* Terraform Remote State Recovery
-* AWS EKS Deployment
-* Multi-Node Kubernetes Cluster
-* Helm Charts
-* ArgoCD GitOps Deployment
-* SonarQube Integration
-* Trivy Security Scanning
-
----
-
-## Learning Outcomes
+Future Enhancements
+Alertmanager Integration
+Email Notifications
+Slack Notifications
+AWS EKS Deployment
+Multi-Node Kubernetes Cluster
+Helm Charts
+ArgoCD GitOps
+SonarQube Integration
+Trivy Security Scanning
+Learning Outcomes
 
 This project helped develop practical experience in:
 
-* Linux Administration
-* Shell Scripting
-* Docker
-* Kubernetes
-* Terraform
-* AWS Cloud
-* Jenkins
-* Prometheus
-* Grafana
-* CI/CD Automation
-* Infrastructure Automation
-* Observability Engineering
-
----
+Linux Administration
+Shell Scripting
+Docker
+Kubernetes
+Terraform
+AWS Cloud
+Jenkins
+Prometheus
+Grafana
+CI/CD Automation
+Infrastructure Automation
+Observability Engineering
 
 ## Author
 
