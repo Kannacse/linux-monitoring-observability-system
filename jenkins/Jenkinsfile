@@ -60,16 +60,18 @@ stages {
         steps {
             sh '''
             aws ssm send-command \
-            --instance-ids $INSTANCE_ID \
-            --document-name "AWS-RunShellScript" \
-            --comment "Deploy latest monitoring container" \
-            --parameters 'commands=[
-            "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 042775549160.dkr.ecr.ap-south-1.amazonaws.com",
-            "docker pull 042775549160.dkr.ecr.ap-south-1.amazonaws.com/linux-monitoring-system:latest",
-            "docker stop linux-monitoring || true",
-            "docker rm linux-monitoring || true",
-            "docker run -d --name linux-monitoring --restart unless-stopped 042775549160.dkr.ecr.ap-south-1.amazonaws.com/linux-monitoring-system:latest"
-            ]'
+              --instance-ids $INSTANCE_ID \
+              --document-name "AWS-RunShellScript" \
+              --comment "Deploy latest monitoring container" \
+              --parameters '{
+                "commands":[
+                  "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 042775549160.dkr.ecr.ap-south-1.amazonaws.com",
+                  "docker pull 042775549160.dkr.ecr.ap-south-1.amazonaws.com/linux-monitoring-system:latest",
+                  "docker stop linux-monitoring || true",
+                  "docker rm linux-monitoring || true",
+                  "docker run -d --name linux-monitoring --restart unless-stopped 042775549160.dkr.ecr.ap-south-1.amazonaws.com/linux-monitoring-system:latest"
+                ]
+              }'
             '''
         }
     }
@@ -87,4 +89,3 @@ post {
 ```
 
 }
-
