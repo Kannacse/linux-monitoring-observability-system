@@ -1,320 +1,440 @@
-# Linux Monitoring & Auto-Healing Observability Platform
+# Linux Monitoring & Auto-Healing System
 
-A modular Linux infrastructure monitoring and observability platform built using Bash scripting, Docker, Prometheus, Grafana, and automated remediation techniques.
+## Overview
 
-This project monitors Linux system health, collects infrastructure metrics, visualizes performance dashboards, and performs automated recovery actions for failed services.
+Linux Monitoring & Auto-Healing System is a DevOps project designed to monitor Linux system health, analyze resource utilization, automatically perform corrective actions, and provide observability through Prometheus and Grafana.
 
----
+The project demonstrates end-to-end DevOps practices including:
 
-# Project Overview
-
-This project was developed to understand how real infrastructure monitoring and observability platforms work.
-
-The system combines:
-
-- Custom Linux monitoring scripts
-- Threshold-based analysis
-- Auto-healing mechanisms
-- Centralized logging
-- Docker-based observability stack
-- Real-time dashboard visualization
-
----
-
-# Features
-
-## Infrastructure Monitoring
-
-Monitor:
-
-- CPU utilization
-- Memory utilization
-- Disk usage
-- Linux service availability
+* Linux Administration
+* Shell Scripting
+* Docker Containerization
+* AWS Cloud Infrastructure
+* Terraform Infrastructure as Code
+* Amazon ECR
+* Kubernetes Deployment
+* Jenkins CI/CD
+* Prometheus Monitoring
+* Grafana Visualization
+* Auto-Healing Mechanisms
 
 ---
 
-## Auto-Healing
-
-Automatically:
-
-- Detect failed services
-- Restart inactive services
-- Generate operational logs
-
----
-
-## Logging System
-
-Maintain:
-
-- Monitoring execution history
-- Timestamp-based logs
-- Alert and recovery tracking
-
-Example:
+## Project Architecture
 
 ```text
-[2026-05-15 17:15:52]
-CPU HEALTHY - Usage: 12%
++-----------------------+
+| Linux Monitoring      |
+| Scripts               |
++----------+------------+
+           |
+           v
++-----------------------+
+| Health Analyzer       |
++----------+------------+
+           |
+           v
++-----------------------+
+| Auto-Healing Engine   |
++----------+------------+
+           |
+           v
++-----------------------+
+| Docker Container      |
++----------+------------+
+           |
+           v
++-----------------------+
+| Amazon ECR            |
++----------+------------+
+           |
+           v
++-----------------------+
+| Kubernetes            |
+| (Minikube)            |
++----------+------------+
+           |
+           +----------------+
+           |                |
+           v                v
++----------------+   +----------------+
+| Prometheus     |   | Grafana        |
++----------------+   +----------------+
 
-[2026-05-15 17:16:03]
-AUTO-HEALING - Restarted sshd
+           ^
+           |
++-----------------------+
+| Jenkins CI/CD         |
++-----------------------+
 ```
 
 ---
 
-## Scheduler Automation
+## Features
 
-Automated execution using:
+### Monitoring
 
-- Cron jobs
+Monitors:
+
+* CPU Utilization
+* Memory Utilization
+* Disk Usage
+* Critical Services
+
+### Health Analysis
+
+Evaluates system health using configurable thresholds.
+
+### Auto-Healing
+
+Supports:
+
+* Service Restart
+* Log Cleanup
+* Resource Recovery Actions
+
+### Containerization
+
+* Dockerized monitoring platform
+* Portable deployment architecture
+
+### Kubernetes Deployment
+
+* Kubernetes Deployment Manifest
+* Replica Management
+* Pod Self-Healing
+* Rolling Updates
+
+### Observability
+
+Prometheus:
+
+* Node Metrics Collection
+* System Health Metrics
+
+Grafana:
+
+* CPU Dashboard
+* Memory Dashboard
+* Disk Dashboard
+* Service Monitoring Dashboard
+
+### CI/CD
+
+Jenkins Pipeline:
+
+* Source Code Checkout
+* Docker Image Build
+* Amazon ECR Push
+* Kubernetes Deployment
 
 ---
 
-## Observability Stack
-
-Integrated:
-
-- Docker
-- Node Exporter
-- Prometheus
-- Grafana
-
-Features:
-
-- Real-time metrics
-- Dashboard visualization
-- Infrastructure monitoring
-
----
-
-# Project Architecture
-
-```text
-Linux System
-│
-├── Monitoring Layer
-│   ├── CPU Monitor
-│   ├── Memory Monitor
-│   ├── Disk Monitor
-│   └── Service Monitor
-│
-├── Auto-Healing Layer
-│   ├── Restart Service
-│   ├── Cleanup Logs
-│   └── Resource Handling
-│
-├── Logging Layer
-│
-├── Scheduler Layer
-│
-├── Observability Layer
-│   ├── Node Exporter
-│   ├── Prometheus
-│   └── Grafana
-│
-└── Dashboard Visualization
-```
-
----
-
-# Project Structure
+## Project Structure
 
 ```text
 linux-monitoring-system/
 
 ├── analyzer/
 ├── config/
-├── custom-metrics/
+├── controller/
+├── docker/
+│   ├── Dockerfile
+│   └── entrypoint.sh
 ├── healer/
-├── logs/
-├── main-controller/
+├── jenkins/
+│   └── Jenkinsfile
+├── k8s/
+│   └── deployment.yaml
+├── metrics/
 ├── monitor/
 ├── observability/
 ├── scheduler/
-├── screenshots/
+├── scripts/
+├── terraform/
+│   ├── backend.tf
+│   ├── environments/
+│   ├── modules/
+│   └── providers.tf
 ├── utils/
-├── start-project.sh
-└── README.md
+└── start-project.sh
 ```
 
 ---
 
-# Technologies Used
+## Technologies Used
 
-## Scripting & Linux
+### Operating System
 
-- Bash
-- Cron
-- systemctl
-- AWK
-- GREP
+* Linux
+* Garuda Linux
 
-## Monitoring
+### Scripting
 
-- Prometheus
-- Node Exporter
+* Bash
 
-## Visualization
+### Containerization
 
-- Grafana
+* Docker
 
-## Containerization
+### Cloud
 
-- Docker
-- Docker Compose
+* AWS EC2
+* Amazon ECR
+* IAM
+
+### Infrastructure as Code
+
+* Terraform
+
+### Kubernetes
+
+* Minikube
+* kubectl
+
+### CI/CD
+
+* Jenkins
+
+### Monitoring
+
+* Prometheus
+* Node Exporter
+* Grafana
+
+### Version Control
+
+* Git
+* GitHub
 
 ---
 
-# Monitoring Workflow
+## AWS Resources Used
+
+* EC2
+* ECR
+* IAM
+* Security Groups
+
+Terraform modules created for:
+
+* Networking
+* Security
+* Monitoring
+* ECR
+* IAM
+* EC2
+
+---
+
+## Completed Milestones
+
+### Phase 1 – Linux Monitoring
+
+Completed:
+
+* CPU Monitoring
+* Memory Monitoring
+* Disk Monitoring
+* Service Monitoring
+
+Status: ✅ Completed
+
+---
+
+### Phase 2 – Health Analysis
+
+Completed:
+
+* Threshold-Based Analysis
+* Health Status Evaluation
+
+Status: ✅ Completed
+
+---
+
+### Phase 3 – Auto-Healing
+
+Completed:
+
+* Service Restart Automation
+* Log Cleanup Automation
+
+Status: ✅ Completed
+
+---
+
+### Phase 4 – Dockerization
+
+Completed:
+
+* Dockerfile Creation
+* Docker Image Build
+* Container Execution
+
+Status: ✅ Completed
+
+---
+
+### Phase 5 – AWS Integration
+
+Completed:
+
+* AWS CLI Configuration
+* ECR Repository Creation
+* Docker Image Push
+
+Status: ✅ Completed
+
+---
+
+### Phase 6 – Prometheus
+
+Completed:
+
+* Prometheus Deployment
+* Node Exporter Deployment
+* Metrics Collection
+
+Status: ✅ Completed
+
+---
+
+### Phase 7 – Grafana
+
+Completed:
+
+* Grafana Deployment
+* Dashboard Configuration
+* Prometheus Integration
+
+Status: ✅ Completed
+
+---
+
+### Phase 8 – Kubernetes
+
+Completed:
+
+* Minikube Cluster Setup
+* Deployment Manifest Creation
+* Pod Deployment
+* Pod Verification
+
+Status: ✅ Completed
+
+---
+
+### Phase 9 – Jenkins CI/CD
+
+Completed:
+
+* Jenkins Installation
+* Docker Integration
+* AWS CLI Integration
+* kubectl Integration
+* Kubernetes Connectivity
+
+In Progress:
+
+* Jenkins Pipeline Validation
+* Automated ECR Push
+* Automated Kubernetes Deployment
+
+Status: 🔄 In Progress
+
+---
+
+## Current Status
+
+Project Completion: 95%
 
 ```text
-Cron
- ↓
-
-main-monitor
- ↓
-
-CPU
-Memory
-Disk
-Service Monitoring
-
- ↓
-
-Threshold Evaluation
-
- ↓
-
-Logging
-
- ↓
-
-Auto-Healing
+Linux Monitoring        ✅
+Auto-Healing            ✅
+Docker                  ✅
+Terraform               ✅
+AWS                     ✅
+Amazon ECR              ✅
+Prometheus              ✅
+Grafana                 ✅
+Kubernetes              ✅
+Jenkins                 🔄
 ```
 
 ---
 
-# Observability Workflow
+## Remaining Tasks
 
-```text
-Node Exporter
-      ↓
+### Jenkins Pipeline
 
+* Fix Jenkinsfile formatting issue
+* Validate pipeline execution
+* Verify ECR push automation
+* Verify Kubernetes deployment automation
+
+### Future Enhancements
+
+* Slack Notifications
+* Email Alerts
+* Terraform Remote State Recovery
+* AWS EKS Deployment
+* Multi-Node Kubernetes Cluster
+* Helm Charts
+* ArgoCD GitOps Deployment
+* SonarQube Integration
+* Trivy Security Scanning
+
+---
+
+## Learning Outcomes
+
+This project helped develop practical experience in:
+
+* Linux Administration
+* Shell Scripting
+* Docker
+* Kubernetes
+* Terraform
+* AWS Cloud
+* Jenkins
+* Prometheus
+* Grafana
+* CI/CD Automation
+* Infrastructure Automation
+* Observability Engineering
+
+---
+
+## Author
+
+Kannan T
+
+Aspiring DevOps Engineer | Cloud Engineer | Linux Enthusiast
+
+This project was built as a hands-on end-to-end DevOps implementation to demonstrate practical skills in:
+
+Linux Administration
+Shell Scripting
+Docker
+Kubernetes
+Terraform
+AWS Cloud
+Jenkins CI/CD
 Prometheus
-      ↓
-
 Grafana
-```
+Infrastructure Automation
 
----
+Currently seeking opportunities in:
 
-# Installation
-
-Clone repository:
-
-```bash
-git clone <repository-url>
-
-cd linux-monitoring-system
-```
-
----
-
-# Start Entire Platform
-
-Run:
-
-```bash
-./start-project.sh
-```
-
-This automatically:
-
-- Starts Docker services
-- Starts Prometheus
-- Starts Grafana
-- Starts monitoring scripts
-
----
-
-# Dashboard Access
-
-## Prometheus
-
-```text
-http://localhost:9090
-```
-
----
-
-## Grafana
-
-```text
-http://localhost:3000
-```
-
-Default:
-
-```text
-Username: admin
-Password: admin
-```
-
----
-
-# Screenshots
-
-Add screenshots here:
-
-- Grafana Dashboard
-- Prometheus Targets
-- Docker Containers
-- Monitoring Logs
-- Auto-Healing Execution
-
----
-
-# Learning Outcomes
-
-This project helped develop practical knowledge in:
-
-- Linux monitoring
-- Bash automation
-- Infrastructure observability
-- Service remediation
-- Docker containerization
-- Metrics collection
-- Dashboard visualization
-- DevOps workflows
-- Infrastructure troubleshooting
-
----
-
-# Future Enhancements
-
-Planned roadmap:
-
-## V2
-- Custom Prometheus Metrics
-- Dashboard Improvements
-
-## V3
-- Jenkins CI/CD Integration
-
-## V4
-- Kubernetes Deployment
-
-## V5
-- Cloud-scale Monitoring Platform
-
----
-
-# Author
-
-Kannan
+DevOps Engineering
+Cloud Engineering
+Site Reliability Engineering (SRE)
+Platform Engineering
+Linux Administration
 
 GitHub:
 https://github.com/Kannacse
-# CICD Test
+
+Project Repository:
+https://github.com/Kannacse/linux-monitoring-observability-system
