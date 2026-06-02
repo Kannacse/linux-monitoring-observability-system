@@ -315,34 +315,6 @@ kubectl get all
 
 ---
 
-## Screenshots
-
-### Jenkins Pipeline Success
-
-(Add Screenshot)
-
-### Kubernetes Deployment
-
-(Add Screenshot)
-
-### Prometheus Targets
-
-(Add Screenshot)
-
-### Grafana Dashboard
-
-(Add Screenshot)
-
-### Alert Rules
-
-(Add Screenshot)
-
-### Self-Healing Demonstration
-
-(Add Screenshot)
-
----
-
 ## Future Enhancements
 
 * Alertmanager Integration
