@@ -55,27 +55,25 @@ stages {
         }
     }
 
-    stage('Deploy To EC2') {
-        steps {
-            sh '''
-            aws ssm send-command \
-            --instance-ids $INSTANCE_ID \
-            --document-name "AWS-RunShellScript" \
-            --comment "Deploy latest monitoring container" \
-            --parameters '{
-                "commands": [
-                    "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 042775549160.dkr.ecr.ap-south-1.amazonaws.com",
-                    "docker pull 042775549160.dkr.ecr.ap-south-1.amazonaws.com/linux-monitoring-system:latest",
-                    "docker stop linux-monitoring || true",
-                    "docker rm linux-monitoring || true",
-                    "docker run -d --name linux-monitoring --restart unless-stopped 042775549160.dkr.ecr.ap-south-1.amazonaws.com/linux-monitoring-system:latest"
-                ]
-            }'
-            '''
-        }
+stage('Deploy To EC2') {
+    steps {
+        sh """
+        aws ssm send-command \
+          --region ${AWS_REGION} \
+          --instance-ids ${INSTANCE_ID} \
+          --document-name AWS-RunShellScript \
+          --comment "Deploy latest monitoring container" \
+          --parameters commands='[
+            "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com",
+            "docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:latest",
+            "docker stop linux-monitoring || true",
+            "docker rm linux-monitoring || true",
+            "docker run -d --name linux-monitoring --restart unless-stopped ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:latest"
+          ]'
+        """
     }
 }
-
+    
 post {
     success {
         echo 'Pipeline completed successfully!'
