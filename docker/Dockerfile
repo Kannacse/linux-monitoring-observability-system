@@ -1,13 +1,18 @@
 FROM ubuntu:24.04
 
+# Prevent interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+
 WORKDIR /app
 
-RUN apt update && \
-    apt install -y \
+RUN apt-get update && \
+    apt-get install -y \
     bash \
     procps \
     curl \
-    cron && \
+    cron \
+    tzdata && \
     rm -rf /var/lib/apt/lists/*
 
 COPY monitor /app/monitor
@@ -25,7 +30,7 @@ COPY start-project.sh /app/
 COPY docker/entrypoint.sh /app/
 
 RUN chmod +x \
-/app/start-project.sh \
-/app/entrypoint.sh
+    /app/start-project.sh \
+    /app/entrypoint.sh
 
 ENTRYPOINT ["/app/entrypoint.sh"]
