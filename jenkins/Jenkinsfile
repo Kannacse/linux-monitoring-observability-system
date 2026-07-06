@@ -11,7 +11,7 @@ pipeline {
         AWS_REGION = "ap-south-1"
         AWS_ACCOUNT_ID = "042775549160"
         ECR_REPO = "linux-monitoring-system"
-        INSTANCE_ID = "i-0f9d4e034e0e45f26"
+        INSTANCE_ID = "i-0668b4c9e7adf7a45"
 
         IMAGE_NAME = "linux-monitor-system"
         IMAGE_TAG = "${BUILD_NUMBER}"
