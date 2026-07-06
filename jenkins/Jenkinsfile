@@ -73,8 +73,8 @@ pipeline {
             steps {
                 sh """
                     docker build \
-                    -t ${IMAGE_NAME}:${IMAGE_TAG} \
-                    -f docker/Dockerfile .
+                      -t ${IMAGE_NAME}:${IMAGE_TAG} \
+                      -f docker/Dockerfile .
                 """
             }
         }
@@ -84,9 +84,9 @@ pipeline {
                 sh """
                     aws ecr get-login-password --region ${AWS_REGION} | \
                     docker login \
-                    --username AWS \
-                    --password-stdin \
-                    ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                      --username AWS \
+                      --password-stdin \
+                      ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
                 """
             }
         }
@@ -114,23 +114,50 @@ pipeline {
         }
 
         stage('Deploy To EC2') {
-    steps {
-        sh """
-        aws ssm send-command \
-          --region ${AWS_REGION} \
-          --instance-ids ${INSTANCE_ID} \
-          --document-name AWS-RunShellScript \
-          --comment "Deploy latest monitoring container" \
-          --parameters commands='[
-            "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com",
-            "docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}",
-            "docker stop linux-monitoring || true",
-            "docker rm linux-monitoring || true",
-            "docker run -d --name linux-monitoring --restart unless-stopped -p 8080:8080 ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}"
-          ]'
-        """
+            steps {
+                script {
+
+                    def commandId = sh(
+                        script: """
+                            aws ssm send-command \
+                              --region ${AWS_REGION} \
+                              --instance-ids ${INSTANCE_ID} \
+                              --document-name AWS-RunShellScript \
+                              --comment "Deploy latest monitoring container" \
+                              --parameters commands='[
+                                "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com",
+                                "docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}",
+                                "docker stop linux-monitoring || true",
+                                "docker rm linux-monitoring || true",
+                                "docker run -d --name linux-monitoring --restart unless-stopped -p 8080:8080 ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}"
+                              ]' \
+                              --query "Command.CommandId" \
+                              --output text
+                        """,
+                        returnStdout: true
+                    ).trim()
+
+                    echo "SSM Command ID: ${commandId}"
+
+                    sh """
+                        aws ssm wait command-executed \
+                          --region ${AWS_REGION} \
+                          --command-id ${commandId} \
+                          --instance-id ${INSTANCE_ID}
+                    """
+
+                    sh """
+                        aws ssm get-command-invocation \
+                          --region ${AWS_REGION} \
+                          --command-id ${commandId} \
+                          --instance-id ${INSTANCE_ID}
+                    """
+                }
+            }
+        }
+
     }
-}
+
     post {
 
         always {
@@ -140,7 +167,8 @@ pipeline {
         success {
             echo "======================================="
             echo "Pipeline executed successfully."
-            echo "Image Tag : ${IMAGE_TAG}"
+            echo "Docker Image : ${IMAGE_NAME}"
+            echo "Image Tag    : ${IMAGE_TAG}"
             echo "======================================="
         }
 
