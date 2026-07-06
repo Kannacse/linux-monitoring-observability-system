@@ -119,14 +119,14 @@ pipeline {
         aws ssm send-command \
           --region ${AWS_REGION} \
           --instance-ids ${INSTANCE_ID} \
-          --document-name "AWS-RunShellScript" \
+          --document-name AWS-RunShellScript \
           --comment "Deploy latest monitoring container" \
-          --parameters 'commands=[
+          --parameters commands='[
             "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com",
             "docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}",
             "docker stop linux-monitoring || true",
             "docker rm linux-monitoring || true",
-            "docker run -d --name linux-monitoring --restart unless-stopped ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}"
+            "docker run -d --name linux-monitoring --restart unless-stopped -p 8080:8080 ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}"
           ]'
         """
     }
