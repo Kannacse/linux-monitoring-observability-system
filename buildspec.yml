@@ -1,11 +1,10 @@
 version: 0.2
 
 phases:
-
   install:
     commands:
       - |
-        echo "===== INSTALL PHASE ====="
+        echo "===== INSTALL ====="
         aws --version
         docker --version
         git --version
@@ -13,24 +12,18 @@ phases:
   pre_build:
     commands:
       - |
-        echo "===== PRE-BUILD PHASE ====="
+        echo "===== PRE BUILD ====="
 
         AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
         ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
         REPOSITORY_URI="${ECR_REGISTRY}/${ECR_REPO}"
         IMAGE_TAG=$(echo "${CODEBUILD_RESOLVED_SOURCE_VERSION}" | cut -c 1-7)
 
-        export AWS_ACCOUNT_ID
-        export ECR_REGISTRY
-        export REPOSITORY_URI
-        export IMAGE_TAG
-
-        echo "AWS Account = ${AWS_ACCOUNT_ID}"
-        echo "AWS Region = ${AWS_DEFAULT_REGION}"
-        echo "ECR Repository = ${REPOSITORY_URI}"
-        echo "Image Tag = ${IMAGE_TAG}"
-
-        echo "Logging in to Amazon ECR..."
+        echo "AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID}"
+        echo "AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}"
+        echo "ECR_REPO=${ECR_REPO}"
+        echo "IMAGE_NAME=${IMAGE_NAME}"
+        echo "IMAGE_TAG=${IMAGE_TAG}"
 
         aws ecr get-login-password \
           --region "${AWS_DEFAULT_REGION}" \
@@ -38,21 +31,21 @@ phases:
           --username AWS \
           --password-stdin "${ECR_REGISTRY}"
 
+        export AWS_ACCOUNT_ID
+        export ECR_REGISTRY
+        export REPOSITORY_URI
+        export IMAGE_TAG
+
   build:
     commands:
       - |
-        echo "===== BUILD PHASE ====="
-        echo "Building Docker image..."
+        echo "===== BUILD ====="
 
         docker build \
           -t "${IMAGE_NAME}:${IMAGE_TAG}" \
           -f docker/Dockerfile \
           .
 
-        echo "Docker build completed."
-
-        echo "Tagging image..."
-
         docker tag \
           "${IMAGE_NAME}:${IMAGE_TAG}" \
           "${REPOSITORY_URI}:${IMAGE_TAG}"
@@ -60,81 +53,13 @@ phases:
         docker tag \
           "${IMAGE_NAME}:${IMAGE_TAG}" \
           "${REPOSITORY_URI}:latest"
-
-        echo "Docker tagging completed."
 
   post_build:
     commands:
       - |
-        echo "===== POST-BUILD PHASE ====="
+        echo "===== PUSH ====="
 
-        echo "Pushing versioned image..."
+        docker push "${REPOSITORY_URI}:${IMAGE_TAG}"
+        docker push "${REPOSITORY_URI}:latest"
 
-        docker push \
-          "${REPOSITORY_URI}:${IMAGE_TAG}"
-
-        echo "Pushing latest image..."
-
-        docker push \
-          "${REPOSITORY_URI}:latest"
-
-        echo "Docker images pushed successfully."
-
-      - |
-        echo "===== PREPARING SSM DEPLOYMENT ====="
-
-        cat > /tmp/ssm-commands.json <<EOF
-        {
-          "commands": [
-            "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}",
-            "docker pull ${REPOSITORY_URI}:${IMAGE_TAG}",
-            "docker stop linux-monitoring || true",
-            "docker rm linux-monitoring || true",
-            "docker run -d --name linux-monitoring --restart unless-stopped -p 8080:8080 ${REPOSITORY_URI}:${IMAGE_TAG}"
-          ]
-        }
-        EOF
-
-        echo "SSM command file created."
-
-      - |
-        echo "===== DEPLOYING TO EC2 ====="
-
-        COMMAND_ID=$(aws ssm send-command \
-          --region "${AWS_DEFAULT_REGION}" \
-          --instance-ids "${INSTANCE_ID}" \
-          --document-name "AWS-RunShellScript" \
-          --comment "Deploy linux-monitoring" \
-          --parameters file:///tmp/ssm-commands.json \
-          --query "Command.CommandId" \
-          --output text)
-
-        echo "SSM Command ID = ${COMMAND_ID}"
-
-        echo "${COMMAND_ID}" > /tmp/ssm-command-id.txt
-
-      - |
-        echo "===== WAITING FOR SSM ====="
-
-        COMMAND_ID=$(cat /tmp/ssm-command-id.txt)
-
-        aws ssm wait command-executed \
-          --region "${AWS_DEFAULT_REGION}" \
-          --command-id "${COMMAND_ID}" \
-          --instance-id "${INSTANCE_ID}"
-
-        echo "SSM command completed."
-
-      - |
-        echo "===== SSM DEPLOYMENT RESULT ====="
-
-        COMMAND_ID=$(cat /tmp/ssm-command-id.txt)
-
-        aws ssm get-command-invocation \
-          --region "${AWS_DEFAULT_REGION}" \
-          --command-id "${COMMAND_ID}" \
-          --instance-id "${INSTANCE_ID}" \
-          --query '{Status:Status,ResponseCode:ResponseCode,StandardOutputContent:StandardOutputContent,StandardErrorContent:StandardErrorContent}' \
-          --output json
-
-        echo "===== DEPLOYMENT COMPLETE ====="
+        echo "===== ECR PUSH COMPLETE ====="
