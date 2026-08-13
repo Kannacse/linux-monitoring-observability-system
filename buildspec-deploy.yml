@@ -1,0 +1,46 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - |
+        set -e
+
+        echo "===== DEPLOYMENT ====="
+
+        IMAGE="042775549160.dkr.ecr.ap-south-1.amazonaws.com/linux-monitoring-system:latest"
+
+        echo "Deploying:"
+        echo "$IMAGE"
+
+        COMMAND_ID=$(aws ssm send-command \
+          --region ap-south-1 \
+          --instance-ids i-0668b4c9e7adf7a45 \
+          --document-name AWS-RunShellScript \
+          --comment "Deploy Linux Monitoring application" \
+          --parameters commands="[
+            \"aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 042775549160.dkr.ecr.ap-south-1.amazonaws.com\",
+            \"docker pull $IMAGE\",
+            \"docker stop linux-monitoring || true\",
+            \"docker rm linux-monitoring || true\",
+            \"docker run -d --name linux-monitoring --restart unless-stopped -p 8080:8080 $IMAGE\"
+          ]" \
+          --query "Command.CommandId" \
+          --output text)
+
+        echo "SSM Command ID:"
+        echo "$COMMAND_ID"
+
+        echo "Waiting for EC2 deployment..."
+
+        aws ssm wait command-executed \
+          --region ap-south-1 \
+          --command-id "$COMMAND_ID" \
+          --instance-id i-0668b4c9e7adf7a45
+
+        echo "===== DEPLOYMENT RESULT ====="
+
+        aws ssm get-command-invocation \
+          --region ap-south-1 \
+          --command-id "$COMMAND_ID" \
+          --instance-id i-0668b4c9e7adf7a45
