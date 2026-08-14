@@ -1,0 +1,39 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "===== TEST PRE-BUILD ====="
+      - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+      - IMAGE="${ECR_REGISTRY}/${ECR_REPO}:latest"
+
+      - echo "ECR_REGISTRY=${ECR_REGISTRY}"
+      - echo "IMAGE=${IMAGE}"
+
+      - aws ecr get-login-password --region "${AWS_DEFAULT_REGION}" |
+          docker login --username AWS --password-stdin "${ECR_REGISTRY}"
+
+  build:
+    commands:
+      - echo "===== TEST BUILD ====="
+
+      - docker pull "${IMAGE}"
+
+      - docker run -d \
+          --name linux-monitoring-test \
+          -p 8080:8080 \
+          "${IMAGE}"
+
+      - echo "Waiting for application..."
+      - sleep 10
+
+      - echo "Checking application..."
+      - curl -f http://localhost:8080/ || exit 1
+
+  post_build:
+    commands:
+      - echo "===== TEST CLEANUP ====="
+      - docker stop linux-monitoring-test || true
+      - docker rm linux-monitoring-test || true
+      - echo "===== TEST PASSED ====="
