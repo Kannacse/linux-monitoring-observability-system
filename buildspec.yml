@@ -3,63 +3,51 @@ version: 0.2
 phases:
   install:
     commands:
-      - |
-        echo "===== INSTALL ====="
-        aws --version
-        docker --version
-        git --version
+      - echo "===== INSTALL ====="
+      - aws --version
+      - docker --version
+      - git --version
 
   pre_build:
     commands:
-      - |
-        echo "===== PRE BUILD ====="
+      - echo "===== PRE BUILD ====="
+      - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+      - REPOSITORY_URI="${ECR_REGISTRY}/${ECR_REPO}"
+      - IMAGE_TAG=$(echo "${CODEBUILD_RESOLVED_SOURCE_VERSION}" | cut -c 1-7)
 
-        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-        ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-        REPOSITORY_URI="${ECR_REGISTRY}/${ECR_REPO}"
-        IMAGE_TAG=$(echo "${CODEBUILD_RESOLVED_SOURCE_VERSION}" | cut -c 1-7)
+      - echo "AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID}"
+      - echo "AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}"
+      - echo "ECR_REPO=${ECR_REPO}"
+      - echo "IMAGE_NAME=${IMAGE_NAME}"
+      - echo "IMAGE_TAG=${IMAGE_TAG}"
 
-        echo "AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID}"
-        echo "AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}"
-        echo "ECR_REPO=${ECR_REPO}"
-        echo "IMAGE_NAME=${IMAGE_NAME}"
-        echo "IMAGE_TAG=${IMAGE_TAG}"
-
-        aws ecr get-login-password \
-          --region "${AWS_DEFAULT_REGION}" \
-          | docker login \
-          --username AWS \
-          --password-stdin "${ECR_REGISTRY}"
-
-        export AWS_ACCOUNT_ID
-        export ECR_REGISTRY
-        export REPOSITORY_URI
-        export IMAGE_TAG
+      - aws ecr get-login-password --region "${AWS_DEFAULT_REGION}" | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
 
   build:
     commands:
-      - |
-        echo "===== BUILD ====="
+      - echo "===== BUILD ====="
 
-        docker build \
-          -t "${IMAGE_NAME}:${IMAGE_TAG}" \
-          -f docker/Dockerfile \
-          .
+      - docker build -t "${IMAGE_NAME}:${IMAGE_TAG}" -f docker/Dockerfile .
 
-        docker tag \
-          "${IMAGE_NAME}:${IMAGE_TAG}" \
-          "${REPOSITORY_URI}:${IMAGE_TAG}"
-
-        docker tag \
-          "${IMAGE_NAME}:${IMAGE_TAG}" \
-          "${REPOSITORY_URI}:latest"
+      - docker tag "${IMAGE_NAME}:${IMAGE_TAG}" "${REPOSITORY_URI}:${IMAGE_TAG}"
+      - docker tag "${IMAGE_NAME}:${IMAGE_TAG}" "${REPOSITORY_URI}:latest"
 
   post_build:
     commands:
-      - |
-        echo "===== PUSH ====="
+      - echo "===== PUSH ====="
 
-        docker push "${REPOSITORY_URI}:${IMAGE_TAG}"
-        docker push "${REPOSITORY_URI}:latest"
+      - docker push "${REPOSITORY_URI}:${IMAGE_TAG}"
+      - docker push "${REPOSITORY_URI}:latest"
 
-        echo "===== ECR PUSH COMPLETE ====="
+      - echo "===== CREATING ECS IMAGE DEFINITION ====="
+
+      - printf '[{"name":"linux-monitoring","imageUri":"%s"}]' "${REPOSITORY_URI}:${IMAGE_TAG}" > imagedefinitions.json
+
+      - cat imagedefinitions.json
+
+      - echo "===== ECR PUSH COMPLETE ====="
+
+artifacts:
+  files:
+    - imagedefinitions.json

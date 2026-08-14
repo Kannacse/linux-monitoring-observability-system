@@ -1,6 +1,12 @@
 version: 0.2
 
 phases:
+  install:
+    commands:
+      - echo "===== INSTALL TRIVY ====="
+      - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+      - trivy --version
+
   pre_build:
     commands:
       - echo "===== TEST PRE-BUILD ====="
@@ -16,18 +22,28 @@ phases:
       - echo "===== TEST BUILD ====="
       - echo "Pulling image..."
       - docker pull "${IMAGE}"
+
+      - echo "===== TRIVY SECURITY SCAN ====="
+      - trivy image --severity HIGH,CRITICAL --exit-code 1 "${IMAGE}"
+      - echo "===== TRIVY SCAN PASSED ====="
+
       - echo "Starting monitoring container..."
       - docker run -d --name linux-monitoring-test "${IMAGE}"
       - echo "Waiting for monitoring system..."
       - sleep 10
+
       - echo "Checking container status..."
       - docker inspect linux-monitoring-test --format '{{.State.Status}}' | grep -q "running"
+
       - echo "Checking monitoring output..."
       - docker logs linux-monitoring-test
+
       - echo "Checking monitoring process..."
       - docker exec linux-monitoring-test test -x /app/controller/main-monitor
+
       - echo "Checking project scripts..."
       - docker exec linux-monitoring-test test -x /app/start-project.sh
+
       - echo "===== MONITORING TEST PASSED ====="
 
   post_build:
